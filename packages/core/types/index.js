@@ -118,6 +118,7 @@ export type ParcelOptions = {|
   rootDir?: FilePath,
   config?: ParcelConfig,
   defaultConfig?: ParcelConfig,
+  environmentalReporters?: Array<PackageName>,
   env?: {[string]: ?string},
   targets?: Array<Target>,
 

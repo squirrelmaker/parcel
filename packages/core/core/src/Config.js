@@ -172,8 +172,10 @@ export default class Config {
     return this.loadPlugins(optimizers);
   }
 
-  async getReporters(): Promise<Array<Reporter>> {
-    return this.loadPlugins(this.reporters);
+  async getReporters(
+    environmentalReporters?: Array<PackageName> = []
+  ): Promise<Array<Reporter>> {
+    return this.loadPlugins([...this.reporters, ...environmentalReporters]);
   }
 
   isGlobMatch(filePath: FilePath, pattern: Glob) {

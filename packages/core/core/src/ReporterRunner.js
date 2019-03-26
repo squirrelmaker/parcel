@@ -22,7 +22,9 @@ export default class ReporterRunner {
   }
 
   async report(event: ReporterEvent) {
-    let reporters = await this.config.getReporters();
+    let reporters = await this.config.getReporters(
+      this.options.environmentalReporters
+    );
 
     for (let reporter of reporters) {
       await reporter.report(event, this.options);
