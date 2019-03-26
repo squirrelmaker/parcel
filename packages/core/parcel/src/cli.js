@@ -17,6 +17,7 @@ program.version(version);
 var commonOptions = {
   '--no-cache': 'disable the filesystem cache',
   '--cache-dir <path>': 'set the cache directory. defaults to ".parcel-cache"',
+  '--json': 'output parcel messages as lines of json',
   '--no-source-maps': 'disable sourcemaps',
   '--no-autoinstall': 'disable autoinstall',
   '--public-url <url>': 'set the public URL to serve on. defaults to "/"',
@@ -127,6 +128,9 @@ function run(entries: Array<string>, command: any) {
       ...defaultConfig,
       filePath: require.resolve('@parcel/config-default')
     },
+    environmentalReporters: [
+      command.json ? '@parcel/reporter-json' : '@parcel/reporter-cli'
+    ],
     ...normalizeOptions(command)
   });
 
