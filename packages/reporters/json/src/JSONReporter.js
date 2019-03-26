@@ -66,7 +66,7 @@ export default new Reporter({
               type: 'buildSuccess',
               buildTime: event.buildTime,
               bundles: event.bundleGraph
-                ? generateBundleReport(event.bundleGraph)
+                ? generateBundleReport(event.bundleGraph).bundles
                 : undefined
             },
             logLevelFilter
@@ -168,7 +168,11 @@ type JSONReportEvent =
     |}
   | {|+type: 'buildStart'|}
   | {|+type: 'buildFailure', message: string|}
-  | {|+type: 'buildSuccess', buildTime: number, bundles?: BundleReport|}
+  | {|
+      +type: 'buildSuccess',
+      buildTime: number,
+      bundles?: $PropertyType<BundleReport, 'bundles'>
+    |}
   | JSONProgressEvent;
 
 type JSONProgressEvent =
