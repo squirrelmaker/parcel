@@ -13,7 +13,7 @@ import type {IDisposable} from '@parcel/types';
 
 import invariant from 'assert';
 import nullthrows from 'nullthrows';
-import Logger from '@parcel/logger';
+import Logger, {patchConsole} from '@parcel/logger';
 import {errorToJson, jsonToError} from '@parcel/utils/src/errorUtils';
 import {serialize, deserialize} from '@parcel/utils/src/serializer';
 
@@ -37,6 +37,10 @@ class Child {
     if (!process.send) {
       throw new Error('Only create Child instances in a worker!');
     }
+
+    // Patch console log and friends so that all messages written there in the
+    // worker are carried via the logger to the main process
+    patchConsole();
 
     // Monitior all logging events inside this child process and forward to
     // the main process via the bus.

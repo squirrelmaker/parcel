@@ -78,19 +78,23 @@ export function patchConsole() {
   /* eslint-disable no-console */
   // $FlowFixMe
   console.log = (...messages: Array<mixed>) => {
-    logger.info(messages.map(m => inspect(m)).join(' '));
+    logger.info(joinMessages(messages));
   };
 
   // $FlowFixMe
-  console.warn = message => {
-    logger.warn(message);
+  console.warn = (...messages: Array<mixed>) => {
+    logger.warn(joinMessages(messages));
   };
 
   // $FlowFixMe
-  console.error = message => {
-    logger.error(message);
+  console.error = (...messages: Array<mixed>) => {
+    logger.error(joinMessages(messages));
   };
   /* eslint-enable no-console */
 
   consolePatched = true;
+}
+
+function joinMessages(messages: Array<mixed>): string {
+  return messages.map(m => inspect(m)).join(' ');
 }
