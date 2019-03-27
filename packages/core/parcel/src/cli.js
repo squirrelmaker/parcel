@@ -129,7 +129,9 @@ function run(entries: Array<string>, command: any) {
       filePath: require.resolve('@parcel/config-default')
     },
     environmentalReporters: [
-      command.json ? '@parcel/reporter-json' : '@parcel/reporter-cli'
+      command.json
+        ? require.resolve('@parcel/reporter-json')
+        : require.resolve('@parcel/reporter-cli')
     ],
     ...normalizeOptions(command)
   });
