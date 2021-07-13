@@ -12,9 +12,12 @@ const WEBPACK_ALIAS_RE = /^~[^/]/;
 
 export default (new Transformer({
   async loadConfig({config, options}) {
-    let configFile = await config.getConfig(['.sassrc', '.sassrc.js'], {
-      packageKey: 'sass',
-    });
+    let configFile = await config.getConfig(
+      ['.sassrc', '.sassrc.json', '.sassrc.js'],
+      {
+        packageKey: 'sass',
+      },
+    );
 
     let configResult = configFile ? configFile.contents : {};
 
@@ -26,7 +29,7 @@ export default (new Transformer({
     }
 
     if (configFile && path.extname(configFile.filePath) === '.js') {
-      config.shouldInvalidateOnStartup();
+      config.invalidateOnStartup();
     }
 
     if (configResult.importer === undefined) {
@@ -42,7 +45,7 @@ export default (new Transformer({
     configResult.omitSourceMapUrl = true;
     configResult.sourceMapContents = false;
 
-    config.setResult(configResult);
+    return configResult;
   },
 
   async transform({asset, options, config, resolve}) {
@@ -73,13 +76,13 @@ export default (new Transformer({
       css = result.css;
       for (let included of result.stats.includedFiles) {
         if (included !== asset.filePath) {
-          asset.addIncludedFile(included);
+          asset.invalidateOnFileChange(included);
         }
       }
 
       if (result.map != null) {
         let map = new SourceMap(options.projectRoot);
-        map.addRawMappings(JSON.parse(result.map));
+        map.addVLQMap(JSON.parse(result.map));
         asset.setMap(map);
       }
     } catch (err) {
@@ -125,7 +128,7 @@ function resolvePathImporter({asset, resolve, includePaths, options}) {
       paths.push(
         ...options.env.SASS_PATH.split(
           process.platform === 'win32' ? ';' : ':',
-        ),
+        ).map(p => path.resolve(options.projectRoot, p)),
       );
     }
 
